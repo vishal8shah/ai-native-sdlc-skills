@@ -9,3 +9,5 @@ Accessed 03-Nov-2026.
 - [ServiceNow: Automated Test Framework](https://www.servicenow.com/docs/r/application-development/automated-test-framework-atf/atf-landing-page.html) — non-production testing boundary.
 
 Vendor names belong to their respective owners. There is no affiliation or endorsement. The MIT license covers original repository contributions, not the linked third-party material.
+
+- GitHub Actions workflow pins checked through the official action repositories: [checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-python v7.1.0](https://github.com/actions/setup-python/releases/tag/v7.1.0).

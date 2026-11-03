@@ -18,9 +18,23 @@ class RunTests(unittest.TestCase):
  def read(self):return json.loads((self.path/'run.json').read_text())
  def write(self,data):(self.path/'run.json').write_text(json.dumps(data))
  def complete(self,stage):
-  (self.path/s.ARTIFACTS[stage]).write_text(f'# {stage}\nStatus: ACCEPTED\nObserved evidence for synthetic test.\n')
+  d=self.read()
+  content=f'# {stage}\nStatus: ACCEPTED\nRecord ID: {d["record_id"]}\nSource of truth: {d["system_of_record"]}\nAccountable owner: {d["owner"]}\n'
+  content+=''.join(f'\n## {title}\nSynthetic test evidence.\n' for title in s.SECTIONS[stage])
+  (self.path/s.ARTIFACTS[stage]).write_text(content)
   s.snapshot(self.path,stage)
   data=self.read();data['stages'][stage].update(status='accepted',evidence=['synthetic-test-evidence'],decision={'owner':'Reviewer','reference':'external/decision/1','timestamp':'2026-11-03T10:00:00+11:00'});self.write(data)
+ def test_complete_six_stage_chain_passes(self):
+  for stage in s.STAGES:self.complete(stage)
+  self.assertTrue(s.check_run(self.path,require_accepted=True)['valid'])
+ def test_wrong_record_identity_is_rejected(self):
+  self.complete('plan');p=self.path/'intent.md';p.write_text(p.read_text().replace('Record ID: DEMO-001','Record ID: OTHER'))
+  d=self.read();d['stages']['plan']['artifact_sha256']=s.digest(p);self.write(d)
+  self.assertTrue(any('mismatched Record ID' in x for x in s.check_run(self.path,'plan')['findings']))
+ def test_empty_required_section_is_rejected(self):
+  self.complete('plan');p=self.path/'intent.md';p.write_text(p.read_text().replace('## Desired outcome\nSynthetic test evidence.','## Desired outcome'))
+  d=self.read();d['stages']['plan']['artifact_sha256']=s.digest(p);self.write(d)
+  self.assertTrue(any('empty section Desired outcome' in x for x in s.check_run(self.path,'plan')['findings']))
  def test_drafts_are_structurally_valid(self):self.assertTrue(s.check_run(self.path)['valid'])
  def test_drafts_are_not_accepted(self):self.assertFalse(s.check_run(self.path,require_accepted=True)['valid'])
  def test_init_refuses_overwrite(self):

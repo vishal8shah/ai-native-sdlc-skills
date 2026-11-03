@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+<title id="title">AI-Native SDLC Skills: from intent to evidence</title><desc id="desc">Seven reusable skills connect a problem, a change, independent checks and a reviewable decision. Local demo and helper scripts need no API key.</desc>
+<rect width="1200" height="430" rx="24" fill="#102c33"/><circle cx="1120" cy="60" r="170" fill="#173d43"/>
+<g font-family="Arial, Helvetica, sans-serif"><text x="60" y="62" fill="#93cfbf" font-size="20" letter-spacing="3">AI-NATIVE SDLC SKILLS</text>
+<text x="56" y="145" fill="#f3f7ef" font-size="68" font-weight="700">From intent to evidence.</text>
+<text x="60" y="193" fill="#bfd5d1" font-size="27">A repeatable delivery loop for humans and coding agents.</text>
+<g font-size="25" fill="#edf5ef" text-anchor="middle"><rect x="60" y="235" width="220" height="64" rx="12" fill="#23554e"/><text x="170" y="276">Clear intent</text>
+<rect x="340" y="235" width="220" height="64" rx="12" fill="#23554e"/><text x="450" y="276">Bounded change</text>
+<rect x="620" y="235" width="220" height="64" rx="12" fill="#23554e"/><text x="730" y="276">Independent checks</text>
+<rect x="900" y="235" width="240" height="64" rx="12" fill="#23554e"/><text x="1020" y="276">Reviewable decision</text></g>
+<g fill="none" stroke="#8dc9b7" stroke-width="3"><path d="M292 267H327m-9-8 9 8-9 8M572 267H607m-9-8 9 8-9 8M852 267H887m-9-8 9 8-9 8"/></g>
+<text x="60" y="370" fill="#d3e7dc" font-size="25">7 portable skills</text><text x="343" y="370" fill="#d3e7dc" font-size="25">Claude Code + Codex</text><text x="720" y="370" fill="#d3e7dc" font-size="25">MIT licensed</text><text x="965" y="370" fill="#d3e7dc" font-size="25">Runnable demo</text></g></svg>

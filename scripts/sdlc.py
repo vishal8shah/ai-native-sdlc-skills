@@ -16,6 +16,15 @@ ROOT = Path(__file__).resolve().parents[1]
 STAGES = ('plan', 'design', 'build', 'test', 'deploy', 'maintain')
 ARTIFACTS = dict(zip(STAGES, ('intent.md', 'spec.md', 'plan.md', 'test-evidence.md', 'release.md', 'lessons.md')))
 STATUSES = {'draft', 'ready_for_review', 'accepted', 'blocked'}
+SECTIONS = {
+    'plan': ('Problem and evidence','Desired outcome','Scope and exclusions','Acceptance examples','Constraints and unknowns','Decision and next step'),
+    'design': ('Current system and verified context','Options and selected design','Acceptance traceability','Data, access and failure behavior','Policies and conflicts','Open questions and decision'),
+    'build': ('Verified environment and components','Implementation order and proof','Risks, dependencies and rollback','Actual change','Checks actually run','Deviations and next decision'),
+    'test': ('Coverage and actual results','Failures and corrections','Unrun checks and limits','Evidence review and next decision'),
+    'deploy': ('Change and user impact','Review findings and actual test evidence','Required approvals','Release and rollback procedure','Monitoring and stop conditions','Decision and execution'),
+    'maintain': ('Observations and alternative hypotheses','Action, authority and observed outcome','Regression or context improvement','Next intent or disposition','Measurement limits'),
+}
+
 
 class ValidationError(ValueError):
     pass
@@ -142,6 +151,16 @@ def check_run(folder: Path, through: str = 'maintain', require_accepted: bool = 
         header = re.search(r'^Status:\s*(\S+)\s*$', text, re.MULTILINE)
         if not header or header.group(1).lower() != status:
             findings.append(f'{stage}: Markdown and manifest statuses disagree')
+        for label,key in [('Record ID','record_id'),('Source of truth','system_of_record'),('Accountable owner','owner')]:
+            field = re.search(r'^'+re.escape(label)+r':[ \t]*(.+)$',text,re.MULTILINE)
+            if not field or field.group(1).strip() != data[key]:
+                findings.append(f'{stage}: missing or mismatched {label}')
+        blocks = re.split(r'^##[ \t]+(.+?)[ \t]*$',text,flags=re.MULTILINE)
+        sections = {blocks[i].strip(): blocks[i+1].strip() for i in range(1,len(blocks)-1,2)}
+        for title in SECTIONS[stage]:
+            body = re.sub(r'<!--.*?-->','',sections.get(title,''),flags=re.S).strip()
+            if not body:
+                findings.append(f'{stage}: missing or empty section {title}')
         if '[required' in text.lower():
             findings.append(f'{stage}: unfilled required template fields')
         if not record.get('artifact_sha256') or digest(path) != record['artifact_sha256']:

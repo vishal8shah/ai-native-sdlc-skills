@@ -5,12 +5,14 @@ import argparse
 import json
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NAME = 'ai-native-sdlc-skills'
 STAGES = ('sdlc-plan','sdlc-design','sdlc-build','sdlc-test','sdlc-deploy','sdlc-maintain')
-ROOT_FILES = ('SKILL.md', 'agents', 'scripts', 'references', 'skills')
+ROOT_FILES = ('SKILL.md', 'agents', 'references', 'skills')
+RUNTIME_SCRIPTS = ('sdlc.py', 'install.py')
 
 def install(project: Path, client: str, only: str | None = None, apply: bool = False) -> dict:
     project = project.resolve()
@@ -32,23 +34,41 @@ def install(project: Path, client: str, only: str | None = None, apply: bool = F
             raise ValueError(f'Missing source skill: {name}')
         if source.resolve() == dest.resolve() or source.resolve() in dest.resolve().parents:
             raise ValueError('Destination must not be inside the source skill')
-        roots = [source/f for f in ROOT_FILES] if name == NAME else [source]
+        roots = [source/f for f in ROOT_FILES]+[source/'scripts'/f for f in RUNTIME_SCRIPTS] if name == NAME else [source]
         for scan in roots:
             if scan.is_symlink() or (scan.is_dir() and any(p.is_symlink() for p in scan.rglob('*'))):
                 raise ValueError('Skill source must not contain symlinks')
     if apply:
         base.mkdir(parents=True, exist_ok=True)
-        for name, source, dest in plans:
-            if name == NAME:
-                dest.mkdir()
-                for item in ROOT_FILES:
-                    src=source/item
-                    if src.is_dir():
-                        shutil.copytree(src,dest/item,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+        installed=[]
+        with tempfile.TemporaryDirectory(prefix='.sdlc-staging-',dir=base) as temporary:
+            stage=Path(temporary)
+            try:
+                for name,source,dest in plans:
+                    prepared=stage/name
+                    if name==NAME:
+                        prepared.mkdir()
+                        for item in ROOT_FILES:
+                            src=source/item
+                            if src.is_dir():
+                                shutil.copytree(src,prepared/item,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+                            else:
+                                shutil.copy2(src,prepared/item)
+                        (prepared/'scripts').mkdir()
+                        for item in RUNTIME_SCRIPTS:
+                            shutil.copy2(source/'scripts'/item,prepared/'scripts'/item)
                     else:
-                        shutil.copy2(src,dest/item)
-            else:
-                shutil.copytree(source,dest,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+                        shutil.copytree(source,prepared,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+                # Stage all bytes before making any installed skill visible.
+                for name,source,dest in plans:
+                    if dest.exists() or dest.is_symlink():
+                        raise ValueError(f'Refusing to overwrite existing skill: {name}')
+                    (stage/name).rename(dest)
+                    installed.append(dest)
+            except BaseException:
+                for dest in reversed(installed):
+                    shutil.rmtree(dest)
+                raise
     return {'applied': apply, 'client': client, 'skills': [{'name':n,'destination':str(d)} for n,s,d in plans]}
 
 def main(argv=None):

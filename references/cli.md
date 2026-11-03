@@ -18,7 +18,7 @@ Store SHA-256 digests of the current stage artifact and all earlier stage artifa
 
 `python scripts/sdlc.py check-run RUN [--through STAGE] [--require-accepted]`
 
-Validate metadata, confined artifact paths and statuses. For ready-for-review or accepted records, require completed template placeholders, matching Markdown/manifest statuses, nonempty evidence references and matching snapshots. Require accepted records to contain an externally recorded decision owner, reference and timezone-aware timestamp. Require their earlier stages to be accepted and their digests to match.
+Validate metadata, confined artifact paths and statuses. For ready-for-review or accepted records, reject remaining required markers and require matching identity/status fields, nonempty expected stage sections, evidence references and current snapshots. Section checks establish structure, not semantic correctness. Require accepted records to contain an externally recorded decision owner, reference and timezone-aware timestamp. Require their earlier stages to be accepted and their digests to match.
 
 `--require-accepted` rejects drafts/blocked/review-pending records through the chosen stage. A pass verifies only the supplied local record and its content lineage. It does not query approval systems, authenticate identities, prove application behavior or authorize deployment. Never use it as the sole production security gate.
 
@@ -35,3 +35,5 @@ Require nonempty complete paired observations. Elapsed hours must be positive. S
 `python scripts/install.py --client claude|codex --project PATH [--only SKILL] [--apply]`
 
 Default to a dry run. On apply, copy selected skills to the client's local project directory and refuse any existing skill destination. Do not install credentials, permissions, hooks or packages. The default includes a self-contained router plus six standalone stage skills. Re-run locally after reviewing updates rather than overwriting installed skills without review.
+
+For the exact draft-to-review-to-recorded-acceptance steps, use the repository README and its linked walkthrough. Repository-only validator/demo tooling is intentionally not copied into installed skill bundles.
