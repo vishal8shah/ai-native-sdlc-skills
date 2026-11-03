@@ -1,0 +1,6 @@
+label,baseline_elapsed_h,pilot_elapsed_h,baseline_staff_min,pilot_staff_min,baseline_rework,pilot_rework,baseline_defects,pilot_defects
+SYNTHETIC-1,100,80,120,90,1,0,0,0
+SYNTHETIC-2,100,70,120,90,1,0,0,0
+SYNTHETIC-3,100,60,120,90,1,0,0,0
+SYNTHETIC-4,100,90,120,90,1,0,0,0
+SYNTHETIC-5,100,50,120,90,1,0,0,0

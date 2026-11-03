@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Design"
+  short_description: "Turn accepted intent into a traceable specification"
+  default_prompt: "Use $sdlc-design for the supplied software change."

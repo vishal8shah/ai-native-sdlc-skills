@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Plan"
+  short_description: "Capture a clear delivery intent and acceptance checks"
+  default_prompt: "Use $sdlc-plan for the supplied software change."

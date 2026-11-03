@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Test"
+  short_description: "Verify behavior against independent expectations"
+  default_prompt: "Use $sdlc-test for the supplied software change."

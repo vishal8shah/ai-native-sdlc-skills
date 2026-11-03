@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Maintain"
+  short_description: "Turn operational evidence into targeted improvements"
+  default_prompt: "Use $sdlc-maintain for the supplied software change."

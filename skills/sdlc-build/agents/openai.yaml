@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Build"
+  short_description: "Plan and implement a bounded, verifiable change"
+  default_prompt: "Use $sdlc-build for the supplied software change."

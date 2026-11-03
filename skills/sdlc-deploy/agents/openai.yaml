@@ -1,0 +1,4 @@
+interface:
+  display_name: "SDLC Deploy"
+  short_description: "Prepare release evidence and a rollback decision"
+  default_prompt: "Use $sdlc-deploy for the supplied software change."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI-Native SDLC Skills"
+  short_description: "Run an evidence-based software delivery workflow"
+  default_prompt: "Use $ai-native-sdlc-skills to take this change through the appropriate delivery stage."
