@@ -11,9 +11,9 @@
 
 **Seven reusable skills for taking an AI-assisted change from a clear problem to evidence someone can inspect.** Use the whole workflow or install one stage. Built for developers, platform leads and delivery teams using Claude Code or Codex local project skills.
 
-**Try the local demo first.** A generated test passes. Four independent acceptance checks fail. Fix the behavior, then watch an edited requirement invalidate its earlier evidence snapshot.
+**Start with something you can break.** A generated test passes while four acceptance checks fail. Correct the behavior, then change the requirement or the registered source file: the earlier evidence becomes stale. Next, generate a complete six-stage packet with real local test results.
 
-[Run the demo](#try-it-in-about-a-minute) · [Install a skill](#install-into-your-project) · [Read the field guide](docs/FIELD_GUIDE.md) · [Inspect the review](docs/REVIEW.md) · [Contribute](CONTRIBUTING.md)
+[Run the demo](#try-it-in-about-a-minute) · [Experiment with a complete change](#experiment-with-a-complete-change) · [Install a skill](#install-into-your-project) · [Read the field guide](docs/FIELD_GUIDE.md) · [Inspect the review](docs/REVIEW.md)
 
 ## Try it in about a minute
 
@@ -32,6 +32,8 @@ python scripts/demo.py
 2. Correct the behavior: 7/7 acceptance checks pass
 
 3. Snapshot the evidence, then edit the requirement: STALE RECORD DETECTED
+
+4. Edit registered source or remove registered results: EVIDENCE CHANGE DETECTED
 ```
 
 These are deterministic results from a tiny synthetic fixture, not a productivity benchmark or a model evaluation.
@@ -39,6 +41,19 @@ These are deterministic results from a tiny synthetic fixture, not a productivit
 ![Synthetic acceptance demo: original behavior passes three of seven independent checks; corrected behavior passes seven.](docs/assets/demo.svg)
 
 **Why this matters:** test expectations can repeat the implementation's mistake. Agree the required behavior before implementation, keep the evidence tied to an exact version, and make the next handover reconstructable.
+
+## Experiment with a complete change
+
+```shell
+python scripts/worked_example.py --output ../sdlc-worked-example
+python scripts/sdlc.py check-run ../sdlc-worked-example --require-accepted
+```
+
+This creates six filled delivery records, the tiny implementation, four executed unit-test methods, raw output and a structured result. Six unique evidence files are checked by SHA-256 across the six stages. The script refuses to complete the packet if a required test is missing, skipped or fails.
+
+**Decisions are explicitly simulated.** The unit tests really run; no external approval or deployment happens. Open `release.md` to see the distinction. Edit the implementation and repeat `check-run`: it must fail until the evidence is reviewed and updated. The output folder must be new.
+
+[Follow the experiment, including the expected failure](examples/worked-change/README.md) · [See what the quality evidence establishes](docs/QUALITY_BAR.md)
 
 ## The seven skills
 
@@ -101,17 +116,27 @@ The installer previews by default, refuses existing skill destinations, stages c
 |---|---|---|
 |Repository validation|Skill/UI metadata schemas, local file links, evaluation schema and Python syntax|That a model follows the skills|
 |Helper tests|Covered behavior of installation, measurement, record structure and freshness checks|Application correctness or production security|
-|Runnable demo|The specified synthetic failure, correction and stale-evidence cases|Real-world productivity or broad defect detection|
-|Behavior cases|Prompts and reviewer rubrics for seven scenarios; two initial task trials are documented|A model benchmark or cross-client certification|
+|Runnable demo and worked change|Specified synthetic failures; real local unit execution; complete teaching records with verified local attachments|Real approvals, deployment, productivity or broad defect detection|
+|Seven captured skill trials|Original tasks, complete responses, inspected-source hashes and author observations for every shipped skill|A benchmark, independent assurance or cross-client certification|
 |GitHub Actions|The workflow's actual result on its configured OS/Python matrix|Successful execution of every target AI client|
 
 ```shell
 python scripts/validate_repo.py
 python -m unittest discover -s tests -v
 python scripts/demo.py --json
+python scripts/worked_example.py
+python scripts/trials.py verify --require-current
 ```
 
-The CI matrix includes Ubuntu with Python 3.10 and 3.13, Windows with Python 3.13, and macOS with Python 3.13. [Inspect the current runs](https://github.com/vishal8shah/ai-native-sdlc-skills/actions/workflows/validate.yml). See [the self-review](docs/REVIEW.md) for what was found and changed.
+The CI matrix includes Ubuntu with Python 3.10 and 3.13, Windows with Python 3.13, and macOS with Python 3.13. [Inspect the current runs](https://github.com/vishal8shah/ai-native-sdlc-skills/actions/workflows/validate.yml). See [the self-review](docs/REVIEW.md) for false passes found and fixed.
+
+To repeat a skill task in your own client, [read the trial method](evals/recorded/README.md), then emit just its input:
+
+```shell
+python scripts/trials.py prompt DEMO-301 --client codex
+```
+
+Paste that prompt into a fresh context in the project where you installed the skills. Keep the recorded response and author observations away from the assistant until after the run. The original runner's exact model deployment identifier was unavailable; the packets disclose that limit.
 
 ## Work with real delivery records
 
@@ -122,6 +147,8 @@ python scripts/sdlc.py check-run ../delivery-demo --through plan
 ```
 
 Initialization creates drafts. A structurally valid draft is not an accepted change. Follow the complete [draft → review → recorded acceptance walkthrough](docs/WALKTHROUGH.md), including the required evidence and decision object. Keep existing work/change systems authoritative where your team requires them.
+
+Register a real local evidence file with `attach-evidence` before snapshotting. A plain URL or reference string is recorded but **not fetched or verified**. Local hash checks detect changed bytes; they do not establish correct behavior or authenticated approval.
 
 For ServiceNow, verify the actual instance, application scope, components and transport route. The [adaptation](references/servicenow.md) includes non-production ATF and alternative-submission considerations. There is no ServiceNow connector in this project.
 

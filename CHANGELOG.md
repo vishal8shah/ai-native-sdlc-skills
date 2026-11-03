@@ -1,5 +1,14 @@
 # Changes
 
+## 0.3.0 — 03-Nov-2026
+
+- Bind registered local source and result files to records by SHA-256; detect edits, deletion and unsafe paths. Report plain external references as unverified.
+- Close false passes involving quoted metadata, skill-name suffixes and documents hidden in comments or code blocks; allow real fenced evidence and inline code in supported Markdown.
+- Normalize record identity text and reject multiline/control-character values. Reject symlink ancestors and mutable metadata as evidence attachments.
+- Add an explicit synthetic record mode and a complete six-stage worked change with real unit execution, structured results and clearly simulated decisions. Missing, skipped or failed required tests leave the stages as drafts.
+- Preserve fresh-context task inputs, complete responses, source hashes, provenance and author observations for all seven skills. Add integrity verification and an input-only replay command; no benchmark score is claimed.
+- Add regression cases, evidence-model diagrams, an experiment guide and a public quality bar. Extend the four-configuration CI matrix to run trial integrity and the worked example.
+
 ## 0.2.0 — 03-Nov-2026
 
 - Add a runnable synthetic demo of misleading test expectations, corrected behavior and stale evidence.

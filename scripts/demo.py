@@ -18,17 +18,26 @@ def run_demo(output=None):
     fixture=load('demo_fixture',ROOT/'demo/justification.py')
     delivery=load('delivery_helper',ROOT/'scripts/sdlc.py')
     def inspect(folder):
-        delivery.init_run(folder,'Synthetic request validation','DEMO-001','Demo reviewer',profile='servicenow')
+        delivery.init_run(folder,'Synthetic request validation','DEMO-001','Demo reviewer',profile='servicenow',record_mode='synthetic')
         data=delivery.load_run(folder)
         text='# Synthetic intent\nStatus: READY_FOR_REVIEW\nRecord ID: DEMO-001\nSource of truth: Existing work item and change records\nAccountable owner: Demo reviewer\n'
         text+=''.join(f'\n## {title}\nSynthetic demo fixture; reject blank justification.\n' for title in delivery.SECTIONS['plan'])
         artifact=folder/'intent.md';artifact.write_text(text,encoding='utf-8')
         data['stages']['plan'].update(status='ready_for_review',evidence=['synthetic-fixture:DEMO-001'])
         delivery.save_run(folder,data);delivery.snapshot(folder,'plan')
+        code=folder/'implementation.py';code.write_text((ROOT/'demo/justification.py').read_text(encoding='utf-8'),encoding='utf-8')
+        result_file=folder/'test-results.json';result_file.write_text(json.dumps(fixture.acceptance(fixture.corrected)),encoding='utf-8')
+        delivery.attach_evidence(folder,'plan','implementation.py');delivery.attach_evidence(folder,'plan','test-results.json')
         before=delivery.check_run(folder,'plan')
+        original_code=code.read_bytes();original_result=result_file.read_bytes()
+        code.write_bytes(original_code+b'\n# Source edited after evidence registration.\n')
+        changed_code=delivery.check_run(folder,'plan');code.write_bytes(original_code)
+        result_file.unlink();missing_result=delivery.check_run(folder,'plan');result_file.write_bytes(original_result)
         artifact.write_text(text+'\nRequirement changed after the snapshot.\n',encoding='utf-8')
         after=delivery.check_run(folder,'plan')
-        return {'before_valid':before['valid'],'after_valid':after['valid'],'findings':after['findings']}
+        return {'before_valid':before['valid'],'after_valid':after['valid'],'findings':after['findings'],
+                'changed_code_valid':changed_code['valid'],'missing_result_valid':missing_result['valid'],
+                'changed_code_findings':changed_code['findings'],'missing_result_findings':missing_result['findings']}
     if output is not None:
         lineage=inspect(Path(output))
     else:
@@ -37,7 +46,7 @@ def run_demo(output=None):
     original=fixture.acceptance(fixture.unsafe)
     fixed=fixture.acceptance(fixture.corrected)
     result={'synthetic':True,'generated_test_passed':fixture.unsafe('   ') is True,'original_acceptance':original,'corrected_acceptance':fixed,'lineage':lineage}
-    result['demo_verified']=result['generated_test_passed'] and original['failed']>0 and fixed['failed']==0 and lineage['before_valid'] and not lineage['after_valid']
+    result['demo_verified']=result['generated_test_passed'] and original['failed']>0 and fixed['failed']==0 and lineage['before_valid'] and not lineage['after_valid'] and not lineage['changed_code_valid'] and not lineage['missing_result_valid']
     return result
 
 def main(argv=None):
@@ -55,6 +64,7 @@ def main(argv=None):
             print(f"2. Correct the behavior: {result['corrected_acceptance']['passed']}/7 acceptance checks pass\n")
             print('3. Snapshot the evidence, then edit the requirement: STALE RECORD DETECTED')
             print('   '+ '; '.join(result['lineage']['findings']))
+            print('\n4. Edit registered source or remove registered results: EVIDENCE CHANGE DETECTED')
             print('\nLocal checks verify records and covered behavior; they do not grant release authority.')
             if args.output:print('\nRetained synthetic run: '+str(args.output))
         return 0 if result['demo_verified'] else 1

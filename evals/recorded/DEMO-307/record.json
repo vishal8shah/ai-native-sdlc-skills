@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-307",
+  "skill": "sdlc-deploy",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "675331fa7f54115f19741b8f394afef962329398174840b8a3156e6575e688e7",
+  "response_file": "response.md",
+  "response_sha256": "d944ded69c4f03215354bde71cd494bd1d9309047fb6a146f09df13ec0f51dbd",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-deploy/SKILL.md",
+      "sha256": "efdf66b9437bb1ddfaab3aa0b980bd9b6f1c8d94fd9bbca35137944ba65a353c"
+    },
+    {
+      "path": "skills/sdlc-deploy/assets/output-template.md",
+      "sha256": "06927901aa623d1b099ae656b775d3ecb4b23ffea896bead212e79e8aec70520"
+    }
+  ],
+  "actions_reported": {
+    "original_trial": [
+      "Read skills/sdlc-deploy/SKILL.md using a local cat command.",
+      "Read skills/sdlc-deploy/assets/output-template.md using a local cat command.",
+      "Prepared the release decision pack in the final response from the supplied task brief and those instructions.",
+      "No actual test record, local acceptance JSON, project policy document, authoritative change record, owner identity, target environment, deployment, rollback, or monitoring evidence was inspected or verified.",
+      "No services contacted, evaluation catalogs read, repository edits made, tests run, or release performed."
+    ],
+    "preservation": [
+      "Did not rerun the task trial or change its conclusions.",
+      "Computed current SHA-256 hashes of the two previously inspected files.",
+      "Wrote this JSON record outside the repository.",
+      "Reloaded the saved JSON and checked its original task text, final response text, and inspected-file list against the in-memory values."
+    ]
+  },
+  "limitations_reported": [
+    "The task was synthetic and supplied assertions rather than independently inspected release records.",
+    "The reported demo-r6 test record and local status=accepted JSON were not inspected.",
+    "The release-owner policy and owner name came from the supplied task text; authority and identity were not authenticated.",
+    "The authoritative record location, requirements, changes, candidate-specific test results, approval, target environment, artifact reference, permitted transport, state/data impacts, rollback evidence, monitoring baseline, thresholds, window, and response owner remain unknown or unverified.",
+    "Current file hashes do not establish the exact file contents at the time of the original trial.",
+    "No release readiness, production authorization, or successful execution was established."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Flagged candidate/test version mismatch and unverified acceptance.",
+      "Produced a useful release decision packet.",
+      "Separated the hold recommendation from a real owner decision and execution."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

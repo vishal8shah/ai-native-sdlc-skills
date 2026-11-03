@@ -19,6 +19,8 @@ def frontmatter(text):
         m=re.fullmatch(r'([a-z_]+):\s+(.+)',line)
         if not m or m[1] in values:raise ValueError('Use unique, one-line metadata fields')
         key,raw=m.groups()
+        if key=='description' and not raw.startswith('\"'):
+            raise ValueError('description must be a double-quoted string in this repository')
         if raw.startswith('"'):
             value=json.loads(raw)
         elif re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',raw):
@@ -65,11 +67,11 @@ def validate(root=ROOT):
             expected=NAME if file==root/'SKILL.md' else file.parent.name
             if name!=expected or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',name) or len(name)>64:
                 raise ValueError('Invalid or mismatched skill name')
-            if not 1<=len(values['description'])<=1024:raise ValueError('Invalid description length')
+            if not nonempty(values['description']) or not 1<=len(values['description'])<=1024:raise ValueError('Invalid description length')
             if len(text.splitlines())>500:raise ValueError('Keep SKILL.md under 500 lines')
             if 'TODO' in text:raise ValueError('Unfinished initializer placeholder')
             values=ui_metadata((file.parent/'agents/openai.yaml').read_text(encoding='utf-8'))
-            if f'${name}' not in values['default_prompt']:raise ValueError('Default prompt names the wrong skill')
+            if not re.search(r'\$'+re.escape(name)+r'(?![a-zA-Z0-9_-])',values['default_prompt']):raise ValueError('Default prompt names the wrong skill')
         except (OSError,ValueError,TypeError) as exc:errors.append(f'{file.relative_to(root)}: {exc}')
     if len(names)!=len(set(names)):errors.append('Duplicate skill names')
     for file in root.rglob('*.md'):

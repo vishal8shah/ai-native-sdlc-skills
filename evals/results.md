@@ -1,5 +1,7 @@
 # Initial authoring evaluation
 
+Historical v0.1 record. For the later complete input/output captures across all seven skills, see [the recorded task set](recorded/README.md). The earlier excerpt-based observations below are preserved rather than relabelled as later captures.
+
 Date: 03-Nov-2026. Method: two fresh assistant contexts, supplied only a named stage skill and a synthetic task. Exact runtime model deployment identifier was not exposed. These are limited forward tests, not a benchmark or cross-client compatibility certification. No real services, production changes or external approvals were involved.
 
 |Scenario|Rubric items assessed|Result|
@@ -41,4 +43,4 @@ The response provided a decision pack, separated missing evidence from a failed 
 
 ## Remaining evaluation work
 
-Run all seven cases with the actual target clients and models. Retain complete outputs, traces where available and reviewer scores. Evaluate normal successful paths as well as these failure cases. Do not generalize two scenario results to production reliability.
+The later task set covers all seven skills through the built-in authoring runner and includes a successful implementation path. Actual target-client discovery and repeated cross-model trials remain outstanding. Retain complete outputs, traces where available and reviewer scores in future runs. Do not generalize selected scenario results to production reliability.

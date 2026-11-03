@@ -30,3 +30,5 @@ jobs:
       - run: python scripts/validate_repo.py
       - run: python -m unittest discover -s tests -v
       - run: python scripts/demo.py --json
+      - run: python scripts/trials.py verify --require-current
+      - run: python scripts/worked_example.py

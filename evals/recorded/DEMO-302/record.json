@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-302",
+  "skill": "sdlc-maintain",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "c4509035a16f500e3ce0cead672a0b9e1707a7f0bf16deb563327f6fd9b6e2ab",
+  "response_file": "response.md",
+  "response_sha256": "94cf7a9ead8f0082a813d51d1380e7aa89cf9088eeaae40a870c63bc161d04af",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-maintain/SKILL.md",
+      "sha256": "c0b4047f4f8723b5ac6c3c83e5265aa1fd1d2597ec1938e5e527603fd853cadb"
+    },
+    {
+      "path": "skills/sdlc-maintain/assets/output-template.md",
+      "sha256": "1f3b6f18436284123114b29be6de454d02244adb3223d7af573f7b1c3ded4123"
+    }
+  ],
+  "actions_reported": {
+    "original_trial": [
+      "Read the supplied task and timestamped summaries.",
+      "Read skills/sdlc-maintain/SKILL.md with cat.",
+      "Read skills/sdlc-maintain/assets/output-template.md with cat.",
+      "Produced the final draft operational learning response shown verbatim in final_response_text.",
+      "No service calls, remediation, repository edits, tests, evaluation catalog reads, or external work-item creation were performed."
+    ],
+    "preservation_only": [
+      "Computed current SHA-256 hashes of the two originally inspected files with sha256sum.",
+      "Created /workspace/scratch/sdlc-quality-trials and wrote maintain.json.",
+      "Reopened and parsed the saved JSON and checked the record ID, original task text, and final response text against the values used to write it.",
+      "Did not rerun the trial or change its conclusions."
+    ],
+    "independent_outcome_verification": "None; the synthetic summaries were the only incident evidence supplied."
+  },
+  "limitations_reported": [
+    "Cause, rollback execution, recovery, incident duration, and current health remain unverified.",
+    "Raw traces, request counts, deployment diffs, summary definitions, aggregation intervals, clock alignment, source date and timezone, summary versions, and authoritative incident-record location were not supplied.",
+    "The current SHA-256 hashes were collected during preservation; hashes were not recorded at the original inspection time.",
+    "The proposed procedure change, investigation, owner acceptance, and regression case were not applied or verified.",
+    "The proposed review date was a proposal in the original response, not an accepted commitment.",
+    "No independent benchmark evaluation or external validation is claimed."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Kept release, traffic and upstream failure as alternative hypotheses.",
+      "Did not invent rollback execution or recovery.",
+      "Proposed concrete evidence collection and an accountable owner."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

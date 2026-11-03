@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-303",
+  "skill": "sdlc-plan",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "5c8d7c15cafda08bc08659a87a131cf67b1bae5a276c78581abca4d14f945416",
+  "response_file": "response.md",
+  "response_sha256": "808408b0c1e64082c12d0851471556c562a36311d39cf10180a5e414c764bf48",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-plan/SKILL.md",
+      "sha256": "6d23ad2b178af9af4738f0af9ae0b10a1645af39c050ef52ea8f9dc7b613c34e"
+    },
+    {
+      "path": "skills/sdlc-plan/assets/output-template.md",
+      "sha256": "4494958042b8de5ece4a495ae7f7347581abda90f9a776d028421d1a303c1597"
+    }
+  ],
+  "actions_reported": {
+    "original_trial": [
+      "Read skills/sdlc-plan/SKILL.md with cat.",
+      "Read skills/sdlc-plan/assets/output-template.md with cat.",
+      "Produced the final response reproduced in final_response_text.",
+      "No acceptance tests were run; acceptance examples were proposed, not executed or approved.",
+      "No service calls, evaluation-catalog reads or repository edits were performed."
+    ],
+    "record_preservation": [
+      "Did not rerun the original task or revise its conclusions.",
+      "Calculated current SHA-256 hashes of the two originally inspected files with sha256sum.",
+      "Saved this JSON outside the repository at the explicitly requested scratch path.",
+      "Parsed the saved JSON and checked its ID, skill, original task text and final response text against the values supplied to the write operation."
+    ]
+  },
+  "limitations_reported": [
+    "No synthetic incident records or fixture were supplied or inspected.",
+    "No empirical handover measurement or target time saving was supplied.",
+    "No model or platform was chosen; the exact model deployment identifier is not exposed.",
+    "No accountable-owner approval or executed acceptance result was available.",
+    "The authoritative scenario had no revision identifier or external record URL.",
+    "File hashes were captured during record preservation, after the original trial. Hashes of the files at the instant of original inspection were not recorded, so identical versions at both times are not established."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Produced bounded read-only intent and acceptance examples.",
+      "Did not invent a model, platform or time saving.",
+      "Kept proposed acceptance separate from owner approval."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

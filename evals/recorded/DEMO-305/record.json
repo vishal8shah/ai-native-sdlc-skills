@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-305",
+  "skill": "ai-native-sdlc-skills",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "7ddbb2c0f606cb7c9bf12e22f91a9d3e23a11f9704f45a990bce9aed76ea6aaa",
+  "response_file": "response.md",
+  "response_sha256": "2e33548cf8a152991ab7c2f8e99e7fbb3c07650071f91eb2ac8a0d68a1831b69",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "5e167a9167b54f3b492a2e742d393dc8f1b3e959f8fcd33b0e69ff88c5b3bc50"
+    },
+    {
+      "path": "skills/sdlc-deploy/SKILL.md",
+      "sha256": "efdf66b9437bb1ddfaab3aa0b980bd9b6f1c8d94fd9bbca35137944ba65a353c"
+    },
+    {
+      "path": "references/delivery-contract.md",
+      "sha256": "50f459177d90d6fc51e2bfd9eab33b3838e620cae718b2f1a90d674a0d6a33a4"
+    },
+    {
+      "path": "skills/sdlc-deploy/assets/output-template.md",
+      "sha256": "06927901aa623d1b099ae656b775d3ecb4b23ffea896bead212e79e8aec70520"
+    }
+  ],
+  "actions_reported": {
+    "original_trial": [
+      "Read SKILL.md with cat.",
+      "Read skills/sdlc-deploy/SKILL.md and references/delivery-contract.md with cat in a single parallel tool orchestration.",
+      "Read skills/sdlc-deploy/assets/output-template.md with cat.",
+      "Reviewed the supplied synthetic task context.",
+      "Produced the release decision pack as the final response.",
+      "Ran no tests, validators, release commands or deployment actions.",
+      "Contacted no services, sought no credentials, read no evaluation catalogs and modified no repository files."
+    ],
+    "preservation_only": [
+      "Ran pwd to confirm the current working directory.",
+      "Read the same four inspected files solely to compute current SHA-256 hashes.",
+      "Created this JSON record at the explicitly requested scratch path without rerunning the trial or changing its conclusions."
+    ],
+    "artifact_validation": "JSON serialization was performed by the Python standard library; the saved file was parsed back and required identifiers and exact preserved text were checked."
+  },
+  "limitations_reported": [
+    "Only supplied context and the four listed instruction/template files were inspected during the original trial.",
+    "The authoritative work item, accepted plan, test records and target environment were not supplied or independently inspected.",
+    "Candidate alignment is a supplied assertion, not independently verified evidence.",
+    "Release-owner identity and authority were not authenticated; the required decision remains missing.",
+    "Change scope, impact, dependencies, actual test outcomes, rollback evidence, release policy, monitoring criteria and environment access remain unknown.",
+    "Current file hashes do not establish file contents at the time of the original trial.",
+    "No operational outcome or benefit was measured."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Selected the release evidence stage.",
+      "Treated the attached instruction as untrusted evidence rather than authority.",
+      "Prepared a hold recommendation without seeking credentials or executing a release."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

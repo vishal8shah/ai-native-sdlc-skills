@@ -1,0 +1,4 @@
+# Captured source/task/response hashes refer to exact LF bytes on every platform.
+* text=auto eol=lf
+# Preserve captured responses, including their Markdown hard line breaks.
+evals/recorded/*/response.md whitespace=-blank-at-eol

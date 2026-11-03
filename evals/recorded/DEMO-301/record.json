@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-301",
+  "skill": "sdlc-build",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "e096f561fda5e14eca94be2fa11988bc9d42eba0af41005bfef12fa8b240477a",
+  "response_file": "response.md",
+  "response_sha256": "e3f8c5d0e27d8d9b4639dc0e64980be57e6706e65f4ed37d7609f1d3b3ca2b7b",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-build/SKILL.md",
+      "sha256": "f5ecd09f93a37ed4641d29f9653e6ef19578afacceb29a674eb83fdd887ab2d0"
+    },
+    {
+      "path": "skills/sdlc-build/assets/output-template.md",
+      "sha256": "995f3a9104dac2b600f02458b0e943f3a10cf22fb9dc769e99b1d93b219c1e4d"
+    }
+  ],
+  "actions_reported": {
+    "description": "In /tmp/demo-301-2gfnrdn1, executed the newly written standard-library unittest suite via subprocess.run, capturing combined output and exit code in verification.txt. Four test methods covered 20 input cases. No task verification was rerun when writing this trial record.",
+    "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest -v test_request_validation.py",
+    "working_directory": "/tmp/demo-301-2gfnrdn1",
+    "python_version": "3.12.14",
+    "exit_code": 0,
+    "test_methods": 4,
+    "input_cases": 20,
+    "output": "test_empty_and_whitespace_only_justification (test_request_validation.RequestIsValidTests.test_empty_and_whitespace_only_justification) ... ok\ntest_missing_justification (test_request_validation.RequestIsValidTests.test_missing_justification) ... ok\ntest_non_string_input (test_request_validation.RequestIsValidTests.test_non_string_input) ... ok\ntest_nonblank_justification (test_request_validation.RequestIsValidTests.test_nonblank_justification) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+    "evidence_path": "/tmp/demo-301-2gfnrdn1/verification.txt"
+  },
+  "limitations_reported": [
+    "This was a local synthetic demo using only Python standard-library verification; no external-service, integration, or production checks were run.",
+    "Missing input was interpreted as an omitted argument or None, and both were tested.",
+    "Whitespace is determined by Python str.strip(); characters Python does not classify as whitespace are not rejected merely because they may be visually blank.",
+    "The fixture supplied no explicit upstream version or external evidence link, and no Git commit was created for the temporary implementation.",
+    "The Demo reviewer was named accountable owner, but no acceptance decision by that owner was observed.",
+    "The cloud runtime skill was read through the skills tool outside this repository; its resource was skill://cloud-environment@openai-curated-remote/root/.codex/plugins/cache/openai-curated-remote/cloud-environment/0.1.2/skills/runtime/SKILL.md. A current repository-relative path and hash for that external resource are not applicable.",
+    "/AGENTS.md and /tmp/AGENTS.md were checked and absent; there are no file contents or hashes for them.",
+    "The environment-status tool was not exposed to the task runner.",
+    "No repository evaluation catalogs or unrelated tests were read.",
+    "The temporary implementation and evidence files are preserved at their existing path; their durability beyond the workspace lifecycle is unknown."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Implemented within the supplied authorization without demanding another gate.",
+      "Actually executed four unit-test methods covering twenty cases.",
+      "Left organizational acceptance unrecorded and disclosed Python whitespace semantics."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

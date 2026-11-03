@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-306",
+  "skill": "sdlc-test",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "38ae90ea659d51b97537bc8e4bf128f283ddbc1c0240838d7ecad9a07b0542da",
+  "response_file": "response.md",
+  "response_sha256": "ceafc80d40f810ae6e22c419890600582111884ed514aa490e1a2018ac4c1879",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-test/SKILL.md",
+      "sha256": "4675ae1161c53dcf20761aac79482f5d54b57587f879412c494652ca7f002492"
+    },
+    {
+      "path": "skills/sdlc-test/assets/output-template.md",
+      "sha256": "02f8f106d91dabbc201c3057014f4dabfb3cdf8992925f8022f260dd88dfcef4"
+    }
+  ],
+  "actions_reported": {
+    "original_trial_actions": [
+      {
+        "command": "cat /workspace/projects/ai-native-sdlc-skills/skills/sdlc-test/SKILL.md",
+        "exit_code": 0,
+        "purpose": "Read required skill guidance"
+      },
+      {
+        "command": "cat /workspace/projects/ai-native-sdlc-skills/skills/sdlc-test/assets/output-template.md",
+        "exit_code": 0,
+        "purpose": "Read required output template"
+      }
+    ],
+    "application_checks_run": [],
+    "application_checks_status": "NOT RUN",
+    "services_contacted": false,
+    "evaluation_catalogs_read": false,
+    "repository_changes_made": false,
+    "original_trial_rerun_during_preservation": false,
+    "preservation_actions": [
+      "Read the two previously inspected files to calculate current SHA-256 hashes",
+      "Write this JSON record outside the repository",
+      "Parse the saved JSON and verify exact task and response strings and recorded file paths"
+    ]
+  },
+  "limitations_reported": [
+    "Only the supplied synthetic task narrative and two guidance files were inspected during the original trial.",
+    "No authoritative DEMO-306 record, raw logs, test source, suite inventory, or application execution evidence was supplied.",
+    "The exact specification revision, implementation commit/build, generated test version, target environment, execution timestamps, accountable owner, and named reviewer are unknown.",
+    "Reported implementation behavior and passing tests were not independently reproduced.",
+    "Current file hashes identify preservation-time content; original trial-time hashes were not captured and equality to trial-time file content is unknown.",
+    "No acceptance or release decision was supplied or granted.",
+    "The exact model deployment identifier is not exposed."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Identified a test expectation that contradicted the supplied requirement.",
+      "Distinguished a reported defect from an independently reproduced failure.",
+      "Reported checks as not run and specified missing versioned evidence."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}

@@ -35,6 +35,41 @@ def digest(path: Path) -> str:
 def stamp_time() -> str:
     return datetime.now(timezone.utc).isoformat()
 
+def identity(value, label: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValidationError(f'{label} must be a nonempty string')
+    if any(ord(c)<32 or 127<=ord(c)<=159 or c in '\u2028\u2029' for c in value):
+        raise ValidationError(f'{label} must be single-line text without control characters')
+    return value.strip()
+
+def visible_markdown(text: str) -> str:
+    """Read the supported Markdown structure outside comments and fenced blocks."""
+    output=[];fence=None;comment=False
+    for line in text.splitlines():
+        if fence:
+            marker=re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$',line)
+            if marker and marker[1][0]==fence[0] and len(marker[1])>=fence[1] and not marker[2].strip():
+                fence=None;output.append('')
+            else:
+                output.append('[fenced content]' if line.strip() else '')
+            continue
+        parts=[];position=0
+        while position<len(line):
+            if comment:
+                end=line.find('-->',position)
+                if end<0:break
+                comment=False;position=end+3
+            else:
+                start=line.find('<!--',position)
+                if start<0:parts.append(line[position:]);break
+                parts.append(line[position:start]);comment=True;position=start+4
+        visible=''.join(parts)
+        marker=re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$',visible)
+        if marker:
+            fence=(marker[1][0],len(marker[1]));output.append('')
+        else:output.append(visible)
+    return '\n'.join(output)
+
 def confined(root: Path, value: str) -> Path:
     if not isinstance(value, str) or not value.strip():
         raise ValidationError('Artifact path must be a nonempty relative string')
@@ -42,8 +77,11 @@ def confined(root: Path, value: str) -> Path:
     if p.is_absolute() or '..' in p.parts or '\\' in value or ':' in value:
         raise ValidationError('Artifact paths must stay inside the run folder')
     target = root / p
-    if target.is_symlink():
-        raise ValidationError('Artifact symlinks are not supported')
+    cursor=root
+    for part in p.parts:
+        cursor=cursor/part
+        if cursor.is_symlink():
+            raise ValidationError('File symlinks and symlink ancestors are not supported')
     resolved = target.resolve()
     if root.resolve() not in resolved.parents:
         raise ValidationError('Artifact path escapes the run folder')
@@ -59,15 +97,16 @@ def load_run(folder: Path) -> dict:
     if not isinstance(data, dict) or type(data.get('schema_version')) is not int or data['schema_version'] != 1:
         raise ValidationError('Unsupported run schema')
     for key in ('title', 'record_id', 'owner', 'system_of_record'):
-        if not isinstance(data.get(key), str) or not data[key].strip():
-            raise ValidationError(f'Missing metadata: {key}')
+        data[key]=identity(data.get(key),key)
+    if data.get('record_mode','working') not in ('working','synthetic'):
+        raise ValidationError('Unknown record_mode')
     if data.get('profile') not in ('generic', 'servicenow'):
         raise ValidationError('Unknown profile')
     if not isinstance(data.get('stages'), dict) or set(data['stages']) != set(STAGES):
         raise ValidationError('Run must contain exactly the six known stages')
     for stage in STAGES:
         value = data['stages'][stage]
-        if not isinstance(value, dict) or value.get('status') not in STATUSES:
+        if not isinstance(value, dict) or not isinstance(value.get('status'),str) or value['status'] not in STATUSES:
             raise ValidationError(f'{stage}: invalid stage or status')
         if value.get('artifact') != ARTIFACTS[stage]:
             raise ValidationError(f'{stage}: expected artifact {ARTIFACTS[stage]}')
@@ -88,10 +127,11 @@ def save_run(folder: Path, data: dict) -> None:
 
 def init_run(folder: Path, title: str, record_id: str, owner: str,
              system_of_record: str = 'Existing work item and change records',
-             profile: str = 'generic') -> dict:
-    for label, value in [('title', title), ('record_id', record_id), ('owner', owner), ('system_of_record', system_of_record)]:
-        if not isinstance(value, str) or not value.strip():
-            raise ValidationError(f'{label} must not be blank')
+             profile: str = 'generic', record_mode: str = 'working') -> dict:
+    title=identity(title,'title');record_id=identity(record_id,'record_id')
+    owner=identity(owner,'owner');system_of_record=identity(system_of_record,'system_of_record')
+    if record_mode not in ('working','synthetic'):
+        raise ValidationError('Unknown record_mode')
     if profile not in ('generic', 'servicenow'):
         raise ValidationError('Unknown profile')
     # Read sources before creating output; no partial output for missing templates.
@@ -99,7 +139,7 @@ def init_run(folder: Path, title: str, record_id: str, owner: str,
     folder.mkdir(parents=True, exist_ok=False)
     data = {'schema_version': 1, 'created_at': stamp_time(), 'title': title,
             'record_id': record_id, 'owner': owner, 'system_of_record': system_of_record,
-            'profile': profile, 'stages': {}}
+            'profile': profile, 'record_mode': record_mode, 'stages': {}}
     # Keep user-provided values in JSON; templates remain explicit drafts.
     for stage in STAGES:
         (folder / ARTIFACTS[stage]).write_text(templates[stage], encoding='utf-8')
@@ -123,6 +163,27 @@ def snapshot(folder: Path, stage: str) -> dict:
     save_run(folder, data)
     return record
 
+def attach_evidence(folder: Path, stage: str, relative_path: str) -> dict:
+    if stage not in STAGES:
+        raise ValidationError('Unknown stage')
+    data=load_run(folder);record=data['stages'][stage]
+    if record['status']=='accepted':
+        raise ValidationError('Reopen an accepted stage before attaching new evidence')
+    if relative_path in ('run.json','.run.json.pending'):
+        raise ValidationError('Evidence cannot reference mutable run metadata')
+    path=confined(folder,relative_path)
+    canonical=path.relative_to(folder).as_posix()
+    if canonical in ('run.json','.run.json.pending'):
+        raise ValidationError('Evidence cannot reference mutable run metadata')
+    value={'kind':'local_file','path':canonical,'sha256':digest(path)}
+    evidence=record.get('evidence')
+    if not isinstance(evidence,list):
+        raise ValidationError('Evidence must be a list')
+    record['evidence']=[x for x in evidence if not (isinstance(x,dict) and x.get('kind')=='local_file' and x.get('path')==value['path'])]+[value]
+    record['decision']=None
+    save_run(folder,data)
+    return value
+
 def decision_valid(value) -> bool:
     if not isinstance(value, dict):
         return False
@@ -138,7 +199,9 @@ def check_run(folder: Path, through: str = 'maintain', require_accepted: bool = 
     if through not in STAGES:
         raise ValidationError('Unknown stage')
     data = load_run(folder)
-    findings = []
+    findings = [];warnings=[];local_verified=0;local_paths=set();external_unverified=0
+    if data.get('record_mode')=='synthetic':
+        warnings.append('Synthetic run: acceptance decisions are demonstration metadata, not real approvals.')
     for stage in STAGES[:STAGES.index(through)+1]:
         record = data['stages'][stage]
         status = record['status']
@@ -147,7 +210,10 @@ def check_run(folder: Path, through: str = 'maintain', require_accepted: bool = 
             findings.append(f'{stage}: actual acceptance record is required')
         if status not in ('ready_for_review', 'accepted'):
             continue
-        text = path.read_text(encoding='utf-8')
+        text = visible_markdown(path.read_text(encoding='utf-8'))
+        html_checked=re.sub(r'(`+)(.*?)\1','[inline code]',text,flags=re.S)
+        if re.search(r'</?[A-Za-z][A-Za-z0-9]*(?:\s[^>]*|/?)>',html_checked):
+            findings.append(f'{stage}: raw HTML is unsupported in checked artifact content')
         header = re.search(r'^Status:\s*(\S+)\s*$', text, re.MULTILINE)
         if not header or header.group(1).lower() != status:
             findings.append(f'{stage}: Markdown and manifest statuses disagree')
@@ -178,10 +244,41 @@ def check_run(folder: Path, through: str = 'maintain', require_accepted: bool = 
         if status == 'accepted' and not decision_valid(record.get('decision')):
             findings.append(f'{stage}: missing decision owner, external reference or timezone-aware timestamp')
         evidence = record.get('evidence')
-        if not isinstance(evidence, list) or not evidence or any(not isinstance(v, str) or not v.strip() for v in evidence):
-            findings.append(f'{stage}: evidence must be a list of nonempty references')
+        if not isinstance(evidence, list) or not evidence:
+            findings.append(f'{stage}: evidence must contain at least one reference')
+            continue
+        seen=set()
+        for reference in evidence:
+            if isinstance(reference,str) and reference.strip():
+                external_unverified+=1
+            elif isinstance(reference,dict) and reference.get('kind')=='local_file':
+                try:
+                    if set(reference)!={'kind','path','sha256'}:
+                        raise ValidationError('local_file evidence requires kind, path and sha256 only')
+                    if reference['path'] in ('run.json','.run.json.pending'):
+                        raise ValidationError('Evidence cannot reference mutable run metadata')
+                    if not isinstance(reference['sha256'],str) or not re.fullmatch(r'[0-9a-f]{64}',reference['sha256']):
+                        raise ValidationError('Invalid evidence SHA-256')
+                    local=confined(folder,reference['path'])
+                    canonical=local.relative_to(folder).as_posix()
+                    if canonical in ('run.json','.run.json.pending'):
+                        raise ValidationError('Evidence cannot reference mutable run metadata')
+                    if canonical in seen:raise ValidationError('Duplicate local evidence path')
+                    seen.add(canonical)
+                    if digest(local)!=reference['sha256']:
+                        raise ValidationError('Local evidence changed: '+canonical)
+                    local_verified+=1;local_paths.add(canonical)
+                except (OSError,ValueError,TypeError) as exc:
+                    findings.append(f'{stage}: {exc}')
+            else:
+                findings.append(f'{stage}: unsupported or empty evidence reference')
+    if external_unverified:
+        warnings.append(f'{external_unverified} external reference(s) are recorded but not fetched or verified.')
     return {'valid': not findings, 'record_id': data['record_id'], 'through': through,
-            'findings': findings, 'boundary': 'Local structure and content lineage only; approvals are not authenticated.'}
+            'record_mode':data.get('record_mode','working'),
+            'findings': findings, 'warnings':warnings,
+            'evidence_summary':{'local_files_verified':len(local_paths),'local_file_references_verified':local_verified,'external_references_unverified':external_unverified},
+            'boundary': 'Local artifact and registered-file freshness only; external references and approvals are not authenticated.'}
 
 MEASURES = ('baseline_elapsed_h', 'pilot_elapsed_h', 'baseline_staff_min', 'pilot_staff_min',
             'baseline_rework', 'pilot_rework', 'baseline_defects', 'pilot_defects')
@@ -243,14 +340,18 @@ def main(argv=None) -> int:
         init.add_argument('--'+name, required=True)
     init.add_argument('--system-of-record', default='Existing work item and change records')
     init.add_argument('--profile', choices=['generic', 'servicenow'], default='generic')
+    init.add_argument('--synthetic',action='store_true',help='Mark demonstration decisions as synthetic')
+    attach=subs.add_parser('attach-evidence');attach.add_argument('run',type=Path);attach.add_argument('--stage',choices=STAGES,required=True);attach.add_argument('--file',required=True,help='Existing file path relative to the run folder')
     snap = subs.add_parser('snapshot'); snap.add_argument('run', type=Path); snap.add_argument('--stage', choices=STAGES, required=True)
     check = subs.add_parser('check-run'); check.add_argument('run', type=Path); check.add_argument('--through', choices=STAGES, default='maintain'); check.add_argument('--require-accepted', action='store_true')
     meas = subs.add_parser('measure'); meas.add_argument('csv', type=Path); meas.add_argument('--hour-rate', type=float, required=True); meas.add_argument('--setup-hours', type=float, default=0); meas.add_argument('--ai-cost', type=float, default=0)
     args = parser.parse_args(argv)
     try:
         if args.command == 'init-run':
-            data = init_run(args.output, args.title, args.record_id, args.owner, args.system_of_record, args.profile)
+            data = init_run(args.output, args.title, args.record_id, args.owner, args.system_of_record, args.profile,'synthetic' if args.synthetic else 'working')
             result = {'created': str(args.output), 'record_id': data['record_id'], 'status': 'draft'}
+        elif args.command == 'attach-evidence':
+            result=attach_evidence(args.run,args.stage,args.file)
         elif args.command == 'snapshot':
             result = snapshot(args.run, args.stage)
         elif args.command == 'check-run':

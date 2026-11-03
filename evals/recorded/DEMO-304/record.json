@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-304",
+  "skill": "sdlc-design",
+  "captured_on": "2026-11-03",
+  "task_file": "task.md",
+  "task_sha256": "bd21446dc7fdf1a1f2cf2d4f94150260dc7be7c0726f5f6e965d0754bc0d46ef",
+  "response_file": "response.md",
+  "response_sha256": "4cd0268440d17605feb445a236beec7f6d17a4e86bb3b8d1cecc3d15d21b4ef0",
+  "source_commit": "1dac382f24e8f9753759aaff36c9f60626a3dc3e",
+  "inspected_files": [
+    {
+      "path": "skills/sdlc-design/SKILL.md",
+      "sha256": "e0ff56e577d1237b4852fc12c37bb368ba2068a90baf55b9c37b15cb3342b29c"
+    },
+    {
+      "path": "skills/sdlc-design/assets/output-template.md",
+      "sha256": "f2cd51e19481de7fdfe8160983d4e32d21ecaf329bc21da2a009d07f28529319"
+    }
+  ],
+  "actions_reported": {
+    "original_trial": [
+      "Read skills/sdlc-design/SKILL.md using a local cat command.",
+      "Read skills/sdlc-design/assets/output-template.md using a local cat command.",
+      "Used the supplied synthetic scenario as the authoritative intent and policy evidence.",
+      "Drafted the final specification in the response; no implementation was performed.",
+      "No tests or implementation verification were run.",
+      "No services or evaluation catalogs were accessed; no repository files were modified."
+    ],
+    "preservation": [
+      "Did not rerun the design trial or change its conclusions.",
+      "Calculated current SHA-256 hashes for the two files actually inspected in the original trial.",
+      "Wrote this JSON record outside the repository and parsed it back to verify its id, skill, task text, response text and inspected-file count."
+    ]
+  },
+  "limitations_reported": [
+    "No actual stack, architecture, fields, incident data, access model or integration capabilities were supplied or inspected.",
+    "Policy and accepted intent versions and separate evidence links were not supplied.",
+    "No independent approval record, design approval or retention exception was supplied or verified.",
+    "Individual acceptance IDs were not supplied; the response explicitly labels its traceability references as working labels.",
+    "The original trial recorded no file hashes; the included hashes are current preservation-time hashes and cannot prove historical identity.",
+    "No implementation, tests, deletion checks, provider-retention verification or compatibility checks were performed.",
+    "Exact model deployment identifier was not exposed.",
+    "The record contains author review, not independent evaluation or benchmark results."
+  ],
+  "provenance": {
+    "runner": "fresh-context built-in authoring task runner; not native client discovery",
+    "model_deployment_identifier": null,
+    "model_identifier_status": "not exposed",
+    "hash_timing": "computed during preservation; each inspected source was compared with the pre-change repository content",
+    "classification": "author-reviewed task trial, not a benchmark",
+    "historical_paths": "Original responses include historical authoring filesystem paths; these are not live artifact URLs."
+  },
+  "author_review": {
+    "reviewer": "repository authoring assistant",
+    "observations": [
+      "Preserved the seven-day policy and routed a thirty-day exception to its owner.",
+      "Compared conceptual options without inventing platform capability.",
+      "Mapped supplied behavior to verification methods and disclosed unrun tests."
+    ],
+    "limits": "One trial per skill, selected synthetic tasks and related authoring assistants. No general accuracy or comparative score is inferred."
+  }
+}
