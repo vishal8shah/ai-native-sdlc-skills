@@ -16,6 +16,12 @@ A fresh-context reviewer followed the original README in temporary directories. 
 
 The installer also stages all copies before publication and removes only the new skill directories it created if a later step fails. Regression cases simulate staging and publication failures. The helper still does not protect against an adversary who can alter all local records and tooling.
 
+## Follow-up review
+
+A fresh-context reviewer re-ran the earlier failures against the revision, followed the walkthrough in temporary Claude/Codex project layouts, and exercised installed runtime commands. The review reported no remaining material first-use failures. It confirmed 44 passing local tests, the documented demo, readiness/recorded-acceptance/staleness/reopening behavior, malformed metadata rejection, and failure cleanup that preserved a pre-existing user skill. No real AI client process, genuine approval or external service was exercised. A minor missing repository link in the installed CLI reference was corrected.
+
+The first expanded GitHub matrix run also completed successfully on Ubuntu/Python 3.10 and 3.13, Windows/Python 3.13 and macOS/Python 3.13. [Inspect that exact run](https://github.com/vishal8shah/ai-native-sdlc-skills/actions/runs/41615301412); the workflow link below shows the current status after later changes.
+
 ## Verification layers
 
 |Layer|Evidence and limit|

@@ -36,4 +36,4 @@ Require nonempty complete paired observations. Elapsed hours must be positive. S
 
 Default to a dry run. On apply, copy selected skills to the client's local project directory and refuse any existing skill destination. Do not install credentials, permissions, hooks or packages. The default includes a self-contained router plus six standalone stage skills. Re-run locally after reviewing updates rather than overwriting installed skills without review.
 
-For the exact draft-to-review-to-recorded-acceptance steps, use the repository README and its linked walkthrough. Repository-only validator/demo tooling is intentionally not copied into installed skill bundles.
+For the exact draft-to-review-to-recorded-acceptance steps, use [the repository walkthrough](https://github.com/vishal8shah/ai-native-sdlc-skills/blob/main/docs/WALKTHROUGH.md). Repository-only validator/demo tooling is intentionally not copied into installed skill bundles.
