@@ -13,7 +13,7 @@ jobs:
         with:
           ref: '56833c95bebf4fd9d680d6f5988e6539acea28dc'
           persist-credentials: false
-      - name: Validate the exact release commit with GitHub CLI
+      - name: Validate the installed layout with GitHub CLI
         shell: bash
         run: |
           test "$(git rev-parse HEAD)" = '56833c95bebf4fd9d680d6f5988e6539acea28dc'
@@ -24,4 +24,13 @@ jobs:
           tar -xzf "$work/gh.tar.gz" -C "$work"
           export PATH="$work/gh_2.103.3_linux_amd64/bin:$PATH"
           gh --version
-          gh skill publish --dry-run
+          mkdir "$work/project" "$work/layout"
+          python scripts/install.py --client codex --project "$work/project" --apply
+          mv "$work/project/.agents/skills" "$work/layout/skills"
+          cmp SKILL.md "$work/layout/skills/ai-native-sdlc-skills/SKILL.md"
+          for stage in skills/*; do
+            cmp "$stage/SKILL.md" "$work/layout/$stage/SKILL.md"
+          done
+          test "$(find "$work/layout/skills" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)" -eq 7
+          git diff --exit-code
+          gh skill publish "$work/layout" --dry-run
