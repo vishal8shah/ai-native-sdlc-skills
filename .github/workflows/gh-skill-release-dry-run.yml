@@ -1,0 +1,27 @@
+name: GitHub CLI release dry run
+on:
+  push:
+    branches: ['release-validation-v0.3.0']
+permissions:
+  contents: read
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: '56833c95bebf4fd9d680d6f5988e6539acea28dc'
+          persist-credentials: false
+      - name: Validate the exact release commit with GitHub CLI
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = '56833c95bebf4fd9d680d6f5988e6539acea28dc'
+          git rev-parse HEAD
+          work="$(mktemp -d)"
+          curl --fail --silent --show-error --location 'https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz' --output "$work/gh.tar.gz"
+          printf '%s  %s\n' '4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d' "$work/gh.tar.gz" | sha256sum --check
+          tar -xzf "$work/gh.tar.gz" -C "$work"
+          export PATH="$work/gh_2.103.3_linux_amd64/bin:$PATH"
+          gh --version
+          gh skill publish --dry-run
