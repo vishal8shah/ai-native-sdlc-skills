@@ -1,0 +1,26 @@
+name: Demo release preflight
+on:
+  push:
+    branches: ['demo/skill-release-preflight']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run the preflight against the official GitHub CLI
+        shell: bash
+        run: |
+          git rev-parse HEAD
+          work="$(mktemp -d)"
+          curl --fail --silent --show-error --location 'https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz' --output "$work/gh.tar.gz"
+          printf '%s  %s\n' '4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d' "$work/gh.tar.gz" | sha256sum --check
+          tar -xzf "$work/gh.tar.gz" -C "$work"
+          export PATH="$work/gh_2.103.3_linux_amd64/bin:$PATH"
+          gh --version
+          python scripts/verify_skill_release.py
+          git diff --exit-code
